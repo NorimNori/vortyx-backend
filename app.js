@@ -1,13 +1,25 @@
+require("dotenv").config();
 const express = require("express");
+const mongoose = require("mongoose");
+const authMiddleware = require("./middlewares/auth");
+const errorHandler = require("./middlewares/errorHandler");
+
+const { MONGO_URI = "mongodb://localhost:27017/vortyx" } = process.env;
+const { PORT = 3001 } = process.env;
+
 const app = express();
-const PORT = 3000;
+
+mongoose
+  .connect(MONGO_URI)
+  .then(() => console.log("MongoDB conectado"))
+  .catch((err) => console.error("Error MongoDB:", err));
 
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.send("Servidor de Vortyx funcionando 🚀");
-});
+app.use(authMiddleware);
 
-app.listen(PORT, () => {
-  console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
-});
+app.use(errorHandler);
+
+app.listen(PORT, () => console.log(`Servidor en puerto ${PORT}`));
+
+module.exports = app;
