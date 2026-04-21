@@ -17,6 +17,7 @@ const errorHandler = require("./middlewares/errorHandler");
 const { NotFoundError } = require("./errors");
 
 const { MONGO_URI = "mongodb://localhost:27017/vortyx" } = process.env;
+const { PORT = 3000 } = process.env;
 
 const app = express();
 
@@ -56,6 +57,7 @@ app.use(
 app.use(authRouter);
 
 app.use(authMiddleware);
+
 app.use("/users", usersRouter);
 app.use("/games", gamesRouter);
 app.use("/movies", moviesRouter);
@@ -64,6 +66,7 @@ app.use("/search", searchRouter);
 app.use((req, res, next) => {
   next(new NotFoundError("Ruta no encontrada"));
 });
+
 app.use(
   expressWinston.errorLogger({
     transports: [new winston.transports.File({ filename: "logs/error.log" })],
@@ -75,4 +78,6 @@ app.use(errors());
 
 app.use(errorHandler);
 
-module.exports = app;
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en el puerto ${PORT}`);
+});
