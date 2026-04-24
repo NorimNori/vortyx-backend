@@ -16,18 +16,30 @@ const authMiddleware = require("./middlewares/auth");
 const errorHandler = require("./middlewares/errorHandler");
 const { NotFoundError } = require("./errors");
 
-const { MONGO_URI = "mongodb://localhost:27017/vortyx" } = process.env;
+const { MONGO_URI = "mongodb://127.0.0.1:27017/vortyx" } = process.env;
 const { PORT = 3000 } = process.env;
 
 const app = express();
+
+app.set("trust proxy", 1);
 
 mongoose
   .connect(MONGO_URI)
   .then(() => console.log("MongoDB conectado"))
   .catch((err) => console.error("Error MongoDB:", err));
 
+const allowedOrigins = [
+  "https://gammavortex.com",
+  "https://gammavortex.com",
+  "http://localhost:3000",
+  "http://localhost:5173",
+];
+
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
+  const { origin } = req.headers;
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, Authorization",
@@ -36,6 +48,7 @@ app.use((req, res, next) => {
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, PATCH, DELETE, OPTIONS",
   );
+
   if (req.method === "OPTIONS") {
     return res.sendStatus(200);
   }
@@ -79,5 +92,7 @@ app.use(errors());
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en el puerto ${PORT}`);
+  console.log(
+    `Servidor corriendo en: https://gammavortex.com (puerto local ${PORT})`,
+  );
 });
