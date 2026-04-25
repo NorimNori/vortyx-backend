@@ -29,9 +29,9 @@ mongoose
   .catch((err) => console.error("Error MongoDB:", err));
 
 const allowedOrigins = [
-  "https://gammavortex.com",
-  "https://www.gammavortex.com",
   "https://windy.gammavortex.com",
+  "https://www.windy.gammavortex.com",
+  "https://api.windy.gammavortex.com",
   "http://localhost:3000",
   "http://localhost:5173",
 ];
