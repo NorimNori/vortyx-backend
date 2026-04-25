@@ -30,7 +30,8 @@ mongoose
 
 const allowedOrigins = [
   "https://gammavortex.com",
-  "https://gammavortex.com",
+  "https://www.gammavortex.com",
+  "https://windy.gammavortex.com",
   "http://localhost:3000",
   "http://localhost:5173",
 ];
@@ -46,8 +47,9 @@ app.use((req, res, next) => {
   );
   res.header(
     "Access-Control-Allow-Methods",
-    "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+    "GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS",
   );
+  res.header("Access-Control-Allow-Credentials", "true");
 
   if (req.method === "OPTIONS") {
     return res.sendStatus(200);
@@ -68,7 +70,6 @@ app.use(
 );
 
 app.use(authRouter);
-
 app.use(authMiddleware);
 
 app.use("/users", usersRouter);
@@ -88,11 +89,8 @@ app.use(
 );
 
 app.use(errors());
-
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  console.log(
-    `Servidor corriendo en: https://gammavortex.com (puerto local ${PORT})`,
-  );
+  console.log(`Servidor corriendo en el puerto local ${PORT}`);
 });
