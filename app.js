@@ -1,6 +1,8 @@
 require("dotenv").config();
 
 const express = require("express");
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpec = require("./swagger");
 const mongoose = require("mongoose");
 const expressWinston = require("express-winston");
 const winston = require("winston");
@@ -20,8 +22,6 @@ const { MONGO_URI = "mongodb://127.0.0.1:27017/vortyx" } = process.env;
 const { PORT = 3000 } = process.env;
 
 const app = express();
-const swaggerUi = require("swagger-ui-express");
-const swaggerSpec = require("./swagger");
 
 app.set("trust proxy", 1);
 
@@ -31,6 +31,9 @@ mongoose
   .catch((err) => console.error("Error MongoDB:", err));
 
 app.use(express.json());
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 app.use(express.urlencoded({ extended: true }));
 
 app.use(
