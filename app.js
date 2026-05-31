@@ -20,6 +20,8 @@ const { MONGO_URI = "mongodb://127.0.0.1:27017/vortyx" } = process.env;
 const { PORT = 3000 } = process.env;
 
 const app = express();
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpec = require("./swagger");
 
 app.set("trust proxy", 1);
 
