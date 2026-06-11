@@ -1,0 +1,442 @@
+openapi: 3.0.0
+info:
+  title: API
+  version: 1.0.0
+
+paths:
+  /signup:
+    post:
+      tags:
+        - Auth
+      summary: Registrar usuario
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignupRequest'
+      responses:
+        '201':
+          description: Usuario creado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '409':
+          description: Ya existe una cuenta con ese correo
+
+  /signin:
+    post:
+      tags:
+        - Auth
+      summary: Iniciar sesión
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SigninRequest'
+      responses:
+        '200':
+          description: Token JWT generado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Credenciales inválidas
+
+  /users/me:
+    get:
+      tags:
+        - Users
+      summary: Obtener usuario autenticado
+      responses:
+        '200':
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Usuario no encontrado
+
+  /games:
+    get:
+      tags:
+        - Games
+      summary: Obtener juegos del usuario
+      responses:
+        '200':
+          description: Lista de juegos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
+    post:
+      tags:
+        - Games
+      summary: Crear juego
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGameRequest'
+      responses:
+        '201':
+          description: Juego creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+
+  /games/{gameId}:
+    patch:
+      tags:
+        - Games
+      summary: Actualizar estado del juego
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStatusRequest'
+      responses:
+        '200':
+          description: Juego actualizado
+        '403':
+          description: No tienes permiso para modificar este juego
+        '404':
+          description: Juego no encontrado
+    delete:
+      tags:
+        - Games
+      summary: Eliminar juego
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Juego eliminado correctamente
+
+  /movies:
+    get:
+      tags:
+        - Movies
+      summary: Obtener películas y series
+      responses:
+        '200':
+          description: Lista de películas y series
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movie'
+    post:
+      tags:
+        - Movies
+      summary: Crear película o serie
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMovieRequest'
+      responses:
+        '201':
+          description: Película o serie creada
+
+  /movies/{movieId}:
+    patch:
+      tags:
+        - Movies
+      summary: Actualizar estado de película o serie
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStatusRequest'
+      responses:
+        '200':
+          description: Item actualizado
+        '403':
+          description: No tienes permiso para modificar este item
+        '404':
+          description: Película o serie no encontrada
+    delete:
+      tags:
+        - Movies
+      summary: Eliminar película o serie
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Item eliminado correctamente
+
+  /search:
+    get:
+      tags:
+        - Search
+      summary: Buscar juegos y películas
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 100
+      responses:
+        '200':
+          description: Resultados encontrados
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 6651f65f4d8e72d5d2d70c10
+        name:
+          type: string
+          example: Yuri
+        email:
+          type: string
+          format: email
+          example: yuri@email.com
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    SignupRequest:
+      type: object
+      required:
+        - name
+        - email
+        - password
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 30
+          example: Yuri
+        email:
+          type: string
+          format: email
+          example: yuri@email.com
+        password:
+          type: string
+          minLength: 8
+          example: Password123
+
+    SigninRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: yuri@email.com
+        password:
+          type: string
+          example: Password123
+
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+    Game:
+      type: object
+      properties:
+        _id:
+          type: string
+        rawg_id:
+          type: integer
+          example: 3498
+        title:
+          type: string
+          example: Grand Theft Auto V
+        genre:
+          type: string
+          example: Action
+        platform:
+          type: string
+          example: PC
+        status:
+          type: string
+          enum:
+            - playing
+            - completed
+            - backlog
+            - dropped
+        imageUrl:
+          type: string
+          format: uri
+        playtime:
+          type: integer
+          example: 120
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateGameRequest:
+      type: object
+      required:
+        - rawg_id
+        - title
+        - status
+      properties:
+        rawg_id:
+          type: integer
+          example: 3498
+        title:
+          type: string
+          example: Grand Theft Auto V
+        genre:
+          type: string
+          example: Action
+        platform:
+          type: string
+          example: PC
+        status:
+          type: string
+          enum:
+            - playing
+            - completed
+            - backlog
+            - dropped
+        imageUrl:
+          type: string
+          format: uri
+        playtime:
+          type: integer
+          example: 120
+
+    UpdateStatusRequest:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - playing
+            - completed
+            - backlog
+            - dropped
+
+    Movie:
+      type: object
+      properties:
+        _id:
+          type: string
+        tmdb_id:
+          type: integer
+          example: 603
+        title:
+          type: string
+          example: The Matrix
+        genre:
+          type: string
+          example: Science Fiction
+        type:
+          type: string
+          enum:
+            - movie
+            - series
+        status:
+          type: string
+          enum:
+            - watching
+            - completed
+            - backlog
+            - dropped
+        imageUrl:
+          type: string
+          format: uri
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateMovieRequest:
+      type: object
+      required:
+        - tmdb_id
+        - title
+        - type
+        - status
+      properties:
+        tmdb_id:
+          type: integer
+          example: 603
+        title:
+          type: string
+          example: The Matrix
+        genre:
+          type: string
+          example: Science Fiction
+        type:
+          type: string
+          enum:
+            - movie
+            - series
+        status:
+          type: string
+          enum:
+            - watching
+            - completed
+            - backlog
+            - dropped
+        imageUrl:
+          type: string
+          format: uri
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []

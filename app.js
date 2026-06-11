@@ -2,6 +2,9 @@ require("dotenv").config();
 
 const express = require("express");
 const swaggerUi = require("swagger-ui-express");
+const YAML = require("yamljs");
+
+const swaggerDocument = YAML.load("./docs/swagger.yaml");
 const swaggerSpec = require("./swagger");
 const mongoose = require("mongoose");
 const expressWinston = require("express-winston");
@@ -32,7 +35,7 @@ mongoose
 
 app.use(express.json());
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(express.urlencoded({ extended: true }));
 
