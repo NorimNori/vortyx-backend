@@ -12,6 +12,16 @@ Backend del proyecto final del Bootcamp de Desarrollo Web de TripleTen. Provee a
 
 ---
 
+## Documentación
+
+La API está documentada con **OpenAPI 3.0** y disponible de forma interactiva en Swagger UI.
+
+📄 **[api.windy.gammavortex.com/api-docs](https://api.windy.gammavortex.com/api-docs)**
+
+Desde Swagger UI puedes explorar todos los endpoints, ver los schemas de request y response, y probar la API directamente desde el navegador autenticándote con tu token JWT.
+
+---
+
 ## Stack tecnológico
 
 | Tecnología | Uso |
@@ -21,6 +31,7 @@ Backend del proyecto final del Bootcamp de Desarrollo Web de TripleTen. Provee a
 | JWT + bcryptjs | Autenticación y hash de contraseñas |
 | celebrate / Joi | Validación de request body, params y query |
 | Winston + express-winston | Logs de requests y errores en JSON |
+| swagger-ui-express | Documentación interactiva |
 
 ---
 
@@ -30,6 +41,7 @@ Backend del proyecto final del Bootcamp de Desarrollo Web de TripleTen. Provee a
 vortyx-backend/
 ├── app.js                ← Express + middlewares + rutas
 ├── server.js             ← Punto de entrada
+├── swagger.yaml          ← Documentación OpenAPI 3.0
 ├── models/
 │   ├── user.js           ← Esquema User con findUserByCredentials
 │   ├── game.js           ← Esquema Game con índice de texto ⭐
@@ -80,6 +92,8 @@ mkdir logs
 # 5. Inicia en modo desarrollo
 npm run dev
 ```
+
+Una vez corriendo, la documentación estará disponible en `http://localhost:3000/api-docs`.
 
 ---
 
@@ -241,7 +255,7 @@ Desplegado en Google Cloud con certificado SSL. Accesible vía HTTPS.
 Este backend da servicio al frontend de Vortyx.
 
 🔗 **App:** [windy.gammavortex.com](https://windy.gammavortex.com)
-📁 **Repositorio:** [github.com/tu-usuario/vortyx-frontend](https://github.com/tu-usuario/vortyx-frontend)
+📁 **Repositorio:** [github.com/tu-usuario/vortyx-frontend](https://github.com/NorimNori/vortyx-frontend)
 
 ---
 
